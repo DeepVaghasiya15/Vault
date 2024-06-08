@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:vault/Screens/AuthScreen.dart';
 import 'package:vault/Screens/CameraScreen.dart';
 import 'package:vault/Screens/SettingScreen.dart';
 import 'package:vault/Themes/light_theme.dart';
@@ -24,7 +25,7 @@ class MyApp extends StatelessWidget {
     return MaterialApp(
       title: 'Vault',
       debugShowCheckedModeBanner: false,
-      home: const HomePage(),
+      home: const AuthScreen(),
       theme: lightMode,
       routes: {
         '/HomePage':(context) => HomePage(),

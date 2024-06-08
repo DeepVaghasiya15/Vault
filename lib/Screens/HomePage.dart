@@ -30,7 +30,7 @@ class HomePage extends StatelessWidget {
             ),
             onPressed: () => Navigator.pushNamed(context, '/SettingScreen'),
           ),
-          SizedBox(width: 16),
+          const SizedBox(width: 16),
         ],
       ),
       body: Center(

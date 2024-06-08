@@ -1,5 +1,4 @@
 import 'dart:async';
-
 import 'package:camera/camera.dart';
 import 'package:flutter/material.dart';
 import 'package:path/path.dart' show join;
@@ -27,6 +26,7 @@ class _CameraScreenState extends State<CameraScreen> {
     _initializeCamera();
   }
 
+  //Initialize Camera
   Future<void> _initializeCamera() async {
     cameras = await availableCameras();
     if (cameras != null && cameras!.isNotEmpty) {
@@ -39,6 +39,7 @@ class _CameraScreenState extends State<CameraScreen> {
     }
   }
 
+  //Toggling camera front & rear
   Future<void> _toggleCamera() async {
     if (cameras == null || cameras!.isEmpty) {
       return;
@@ -47,6 +48,7 @@ class _CameraScreenState extends State<CameraScreen> {
     await _initializeCamera();
   }
 
+  //Recording Video
   Future<void> _recordVideo() async {
     if (isRecording) {
       XFile videoFile = await _controller.stopVideoRecording();
@@ -70,15 +72,17 @@ class _CameraScreenState extends State<CameraScreen> {
     }
   }
 
+  //Starting of Timer when clicked on video recording
   void _startTimer() {
     _elapsedTime = 0;
-    _timer = Timer.periodic(Duration(seconds: 1), (timer) {
+    _timer = Timer.periodic(const Duration(seconds: 1), (timer) {
       setState(() {
         _elapsedTime++;
       });
     });
   }
 
+  //Stoping of Timer when clicked on stop recording
   void _stopTimer() {
     _timer?.cancel();
   }
@@ -90,6 +94,7 @@ class _CameraScreenState extends State<CameraScreen> {
     super.dispose();
   }
 
+  // OnTapFocus in camera for focusing on objects
   void _onTapFocus(TapDownDetails details, BoxConstraints constraints) {
     final offset = Offset(
       details.localPosition.dx / constraints.maxWidth,
@@ -135,7 +140,7 @@ class _CameraScreenState extends State<CameraScreen> {
                     left: 100,
                     right: 100,
                     child: Container(
-                      padding: EdgeInsets.all(6),
+                      padding: const EdgeInsets.all(6),
                       decoration: BoxDecoration(
                         color: Colors.red,
                         borderRadius: BorderRadius.circular(8), // Adjust the radius as needed
@@ -160,10 +165,12 @@ class _CameraScreenState extends State<CameraScreen> {
           }
         },
       ),
+      //All 3 buttons of camera
       floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
       floatingActionButton: Row(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
+          //Button for recording video
           FloatingActionButton(
             heroTag: 'recordVideo',
             onPressed: _recordVideo,
@@ -171,6 +178,7 @@ class _CameraScreenState extends State<CameraScreen> {
             child: Icon(isRecording ? Icons.stop : Icons.videocam),
           ),
           const SizedBox(width: 20),
+          //Button for taking photo
           FloatingActionButton(
             heroTag: 'takePhoto',
             onPressed: () async {
@@ -193,6 +201,7 @@ class _CameraScreenState extends State<CameraScreen> {
             child: const Icon(Icons.camera_alt),
           ),
           const SizedBox(width: 20),
+          //For toggling camera front and back
           FloatingActionButton(
             heroTag: 'toggleCamera',
             onPressed: _toggleCamera,
@@ -202,6 +211,7 @@ class _CameraScreenState extends State<CameraScreen> {
       ),
     );
   }
+  //Calculating time
   String _formatElapsedTime(int seconds) {
     final int minutes = seconds ~/ 60;
     final int remainingSeconds = seconds % 60;
