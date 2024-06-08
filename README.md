@@ -1,4 +1,4 @@
-# vault
+# Vault
 
 A new Flutter project.
 
