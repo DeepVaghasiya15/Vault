@@ -1,8 +1,10 @@
 import 'dart:async';
+import 'dart:io';
 import 'package:camera/camera.dart';
 import 'package:flutter/material.dart';
 import 'package:path/path.dart' show join;
 import 'package:path_provider/path_provider.dart';
+import 'package:video_player/video_player.dart';
 
 class CameraScreen extends StatefulWidget {
   const CameraScreen({Key? key}) : super(key: key);
@@ -26,7 +28,7 @@ class _CameraScreenState extends State<CameraScreen> {
     _initializeCamera();
   }
 
-  //Initialize Camera
+  // Initialize Camera
   Future<void> _initializeCamera() async {
     cameras = await availableCameras();
     if (cameras != null && cameras!.isNotEmpty) {
@@ -39,7 +41,7 @@ class _CameraScreenState extends State<CameraScreen> {
     }
   }
 
-  //Toggling camera front & rear
+  // Toggle Camera
   Future<void> _toggleCamera() async {
     if (cameras == null || cameras!.isEmpty) {
       return;
@@ -48,7 +50,7 @@ class _CameraScreenState extends State<CameraScreen> {
     await _initializeCamera();
   }
 
-  //Recording Video
+  // Record Video
   Future<void> _recordVideo() async {
     if (isRecording) {
       XFile videoFile = await _controller.stopVideoRecording();
@@ -57,6 +59,7 @@ class _CameraScreenState extends State<CameraScreen> {
         isRecording = false;
       });
       print('Video saved to ${videoFile.path}');
+      _navigateToPreviewScreen(videoFile.path, true);
     } else {
       final directory = await getTemporaryDirectory();
       final path = join(
@@ -72,7 +75,7 @@ class _CameraScreenState extends State<CameraScreen> {
     }
   }
 
-  //Starting of Timer when clicked on video recording
+  // Start Timer
   void _startTimer() {
     _elapsedTime = 0;
     _timer = Timer.periodic(const Duration(seconds: 1), (timer) {
@@ -82,7 +85,7 @@ class _CameraScreenState extends State<CameraScreen> {
     });
   }
 
-  //Stoping of Timer when clicked on stop recording
+  // Stop Timer
   void _stopTimer() {
     _timer?.cancel();
   }
@@ -94,13 +97,26 @@ class _CameraScreenState extends State<CameraScreen> {
     super.dispose();
   }
 
-  // OnTapFocus in camera for focusing on objects
+  // On Tap Focus
   void _onTapFocus(TapDownDetails details, BoxConstraints constraints) {
     final offset = Offset(
       details.localPosition.dx / constraints.maxWidth,
       details.localPosition.dy / constraints.maxHeight,
     );
     _controller.setFocusPoint(offset);
+  }
+
+  // Navigate to Preview Screen
+  void _navigateToPreviewScreen(String path, bool isVideo) {
+    Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (context) => PreviewScreen(
+          filePath: path,
+          isVideo: isVideo,
+        ),
+      ),
+    );
   }
 
   @override
@@ -143,7 +159,7 @@ class _CameraScreenState extends State<CameraScreen> {
                       padding: const EdgeInsets.all(6),
                       decoration: BoxDecoration(
                         color: Colors.red,
-                        borderRadius: BorderRadius.circular(8), // Adjust the radius as needed
+                        borderRadius: BorderRadius.circular(8),
                       ),
                       child: Text(
                         _formatElapsedTime(_elapsedTime),
@@ -165,12 +181,10 @@ class _CameraScreenState extends State<CameraScreen> {
           }
         },
       ),
-      //All 3 buttons of camera
       floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
       floatingActionButton: Row(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          //Button for recording video
           FloatingActionButton(
             heroTag: 'recordVideo',
             onPressed: _recordVideo,
@@ -178,7 +192,6 @@ class _CameraScreenState extends State<CameraScreen> {
             child: Icon(isRecording ? Icons.stop : Icons.videocam),
           ),
           const SizedBox(width: 20),
-          //Button for taking photo
           FloatingActionButton(
             heroTag: 'takePhoto',
             onPressed: () async {
@@ -189,11 +202,10 @@ class _CameraScreenState extends State<CameraScreen> {
                   directory.path,
                   '${DateTime.now()}.png',
                 );
-                // Take the picture and get the file
                 XFile picture = await _controller.takePicture();
-                // Move the file to the desired path
                 await picture.saveTo(path);
                 print('Picture saved to $path');
+                _navigateToPreviewScreen(path, false);
               } catch (e) {
                 print(e);
               }
@@ -201,7 +213,6 @@ class _CameraScreenState extends State<CameraScreen> {
             child: const Icon(Icons.camera_alt),
           ),
           const SizedBox(width: 20),
-          //For toggling camera front and back
           FloatingActionButton(
             heroTag: 'toggleCamera',
             onPressed: _toggleCamera,
@@ -211,10 +222,151 @@ class _CameraScreenState extends State<CameraScreen> {
       ),
     );
   }
-  //Calculating time
+
+  // Format Elapsed Time
   String _formatElapsedTime(int seconds) {
     final int minutes = seconds ~/ 60;
     final int remainingSeconds = seconds % 60;
     return '${minutes.toString().padLeft(2, '0')}:${remainingSeconds.toString().padLeft(2, '0')}';
+  }
+}
+
+// Preview Screen Widget
+class PreviewScreen extends StatelessWidget {
+  final String filePath;
+  final bool isVideo;
+
+  const PreviewScreen({
+    Key? key,
+    required this.filePath,
+    required this.isVideo,
+  }) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        backgroundColor: Colors.transparent,
+        elevation: 0,
+        foregroundColor: Theme.of(context).colorScheme.inversePrimary,
+        title: Text("Preview",
+            style: TextStyle(
+              fontFamily: 'Lato',
+              fontWeight: FontWeight.w800,
+              fontSize: 24,
+              color: Theme.of(context).colorScheme.inversePrimary,
+            )),
+        centerTitle: true,
+      ),
+      body: Column(
+        children: [
+          Expanded(
+            child: Center(
+              child: isVideo
+                  ? AspectRatio(
+                aspectRatio: 9 / 16,
+                child: VideoPlayerScreen(filePath: filePath),
+              )
+                  : Image.file(File(filePath)),
+            ),
+          ),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              ElevatedButton(
+                onPressed: () => Navigator.pop(context),
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: Colors.red,
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(8),
+                  ),
+                ),
+                child: const Text('Take Again',style: TextStyle(
+                  fontFamily: 'Lato',
+                  fontWeight: FontWeight.w600
+                ),),
+              ),
+              const SizedBox(width: 20),
+              ElevatedButton(
+                onPressed: () {
+
+                },
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: Colors.green,
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(8)
+                  )
+                ),
+                child: const Text('Proceed',style: TextStyle(
+                  fontFamily: 'Lato',
+                  fontWeight: FontWeight.w600
+                ),),
+              ),
+            ],
+          ),
+          const SizedBox(height: 20),
+        ],
+      ),
+    );
+  }
+}
+
+// Video Player Screen Widget
+
+class VideoPlayerScreen extends StatefulWidget {
+  final String filePath;
+
+  const VideoPlayerScreen({
+    Key? key,
+    required this.filePath,
+  }) : super(key: key);
+
+  @override
+  _VideoPlayerScreenState createState() => _VideoPlayerScreenState();
+}
+
+class _VideoPlayerScreenState extends State<VideoPlayerScreen> {
+  late VideoPlayerController _videoController;
+
+  @override
+  void initState() {
+    super.initState();
+    _initializeVideo();
+  }
+
+  @override
+  void dispose() {
+    _videoController.dispose();
+    super.dispose();
+  }
+
+  Future<void> _initializeVideo() async {
+    _videoController = VideoPlayerController.file(File(widget.filePath));
+
+    await _videoController.initialize();
+
+    _videoController.addListener(() {
+      if (_videoController.value.position == _videoController.value.duration) {
+        _videoController.seekTo(Duration.zero);
+        _videoController.play();
+      }
+    });
+
+    setState(() {});
+    _videoController.play();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      body: _videoController.value.isInitialized
+          ? Center(
+        child: AspectRatio(
+          aspectRatio: _videoController.value.aspectRatio,
+          child: VideoPlayer(_videoController),
+        ),
+      )
+          : const Center(child: CircularProgressIndicator()),
+    );
   }
 }

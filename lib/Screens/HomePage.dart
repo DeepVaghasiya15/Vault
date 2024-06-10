@@ -13,7 +13,7 @@ class HomePage extends StatelessWidget {
         backgroundColor: Colors.transparent,
         elevation: 0,
         foregroundColor: Theme.of(context).colorScheme.inversePrimary,
-        title: Text(appState.appName,
+        title: Text("Vault",
             style: TextStyle(
               fontFamily: 'Lato',
               fontWeight: FontWeight.w800,

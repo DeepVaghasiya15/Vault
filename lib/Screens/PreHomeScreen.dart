@@ -1,8 +1,32 @@
+import 'dart:io';
 import 'package:flutter/material.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:vault/Screens/HomePage.dart';
+import '../State/StoringWallpaper.dart';
+// import 'image_preference.dart';
 
-class PreHomeScreen extends StatelessWidget {
-  const PreHomeScreen({super.key});
+class PreHomeScreen extends StatefulWidget {
+  const PreHomeScreen({Key? key, required String backgroundImagePath}) : super(key: key);
+
+  @override
+  _PreHomeScreenState createState() => _PreHomeScreenState();
+}
+
+class _PreHomeScreenState extends State<PreHomeScreen> {
+  String? backgroundImagePath;
+
+  @override
+  void initState() {
+    super.initState();
+    _loadImagePath();
+  }
+
+  Future<void> _loadImagePath() async {
+    final path = await ImagePreference.loadImagePath();
+    setState(() {
+      backgroundImagePath = path;
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -11,8 +35,13 @@ class PreHomeScreen extends StatelessWidget {
         children: [
           // Full-screen image
           Positioned.fill(
-            child: Image.asset(
-              'assets/images/Homescreen.jpg', // replace with your image path
+            child: backgroundImagePath != null
+                ? Image.file(
+              File(backgroundImagePath!),
+              fit: BoxFit.cover,
+            )
+                : Image.asset(
+              'assets/images/Homescreen.jpg', // default image path
               fit: BoxFit.cover,
             ),
           ),
