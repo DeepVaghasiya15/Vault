@@ -1,6 +1,7 @@
 import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class SettingScreen extends StatefulWidget {
   const SettingScreen({Key? key}) : super(key: key);
@@ -12,6 +13,21 @@ class SettingScreen extends StatefulWidget {
 class _SettingScreenState extends State<SettingScreen> {
   File? _selectedImage;
 
+  @override
+  void initState() {
+    super.initState();
+    _loadImage();
+  }
+
+  Future<void> _loadImage() async {
+    final image = await _getImageFromPreferences();
+    if (image != null) {
+      setState(() {
+        _selectedImage = image;
+      });
+    }
+  }
+
   Future<void> _pickImage(BuildContext context) async {
     try {
       final picker = ImagePicker();
@@ -22,6 +38,10 @@ class _SettingScreenState extends State<SettingScreen> {
         setState(() {
           _selectedImage = File(path);
         });
+
+        // Save the image path to shared preferences
+        final prefs = await SharedPreferences.getInstance();
+        await prefs.setString('selected_image_path', path);
 
         // Navigate to ImagePreviewScreen
         Navigator.push(
@@ -36,6 +56,15 @@ class _SettingScreenState extends State<SettingScreen> {
     } catch (e) {
       print("Error picking image: $e");
     }
+  }
+
+  Future<File?> _getImageFromPreferences() async {
+    final prefs = await SharedPreferences.getInstance();
+    final imagePath = prefs.getString('selected_image_path');
+    if (imagePath != null) {
+      return File(imagePath);
+    }
+    return null;
   }
 
   @override
@@ -60,10 +89,24 @@ class _SettingScreenState extends State<SettingScreen> {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: <Widget>[
-              ElevatedButton(
-                onPressed: () => _pickImage(context), // Pass context here
-                child: Text('Pick Image from Gallery'),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  SizedBox(height: 100,),
+                  ElevatedButton(
+                    onPressed: () => _pickImage(context),
+                    child: Text('Pick Image from Gallery',
+                        style: TextStyle(
+                          fontFamily: 'Lato',
+                          fontWeight: FontWeight.w800,
+                          fontSize: 16,
+                          // color: Theme.of(context).colorScheme.inversePrimary,
+                        )),
+                  ),
+                ],
               ),
+              // if (_selectedImage != null)
+              //   Image.file(_selectedImage!),
             ],
           ),
         ),

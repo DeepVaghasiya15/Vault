@@ -3,7 +3,6 @@ import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:vault/Screens/HomePage.dart';
 import '../State/StoringWallpaper.dart';
-// import 'image_preference.dart';
 
 class PreHomeScreen extends StatefulWidget {
   const PreHomeScreen({Key? key, required String backgroundImagePath}) : super(key: key);
@@ -22,7 +21,8 @@ class _PreHomeScreenState extends State<PreHomeScreen> {
   }
 
   Future<void> _loadImagePath() async {
-    final path = await ImagePreference.loadImagePath();
+    final prefs = await SharedPreferences.getInstance();
+    final path = prefs.getString('selected_image_path');
     setState(() {
       backgroundImagePath = path;
     });
@@ -54,7 +54,10 @@ class _PreHomeScreenState extends State<PreHomeScreen> {
               child: ElevatedButton(
                 onPressed: () {
                   // Define the action for the button press
-                  Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => HomePage()));
+                  Navigator.pushReplacement(
+                    context,
+                    MaterialPageRoute(builder: (context) => HomePage()),
+                  );
                   print('Button Pressed');
                 },
                 child: const Text('Press Me'),

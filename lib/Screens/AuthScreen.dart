@@ -82,7 +82,7 @@ class _AuthScreenState extends State<AuthScreen> {
         return;
       }
       if (authenticated) {
-        Navigator.pushReplacement(
+        Navigator.push(
           context,
           MaterialPageRoute(
             builder: (context) => PreHomeScreen(backgroundImagePath: backgroundImagePath ?? 'assets/images/Homescreen.jpg',),
