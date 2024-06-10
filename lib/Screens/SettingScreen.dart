@@ -92,10 +92,10 @@ class _SettingScreenState extends State<SettingScreen> {
               Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  SizedBox(height: 100,),
+                  const SizedBox(height: 100),
                   ElevatedButton(
                     onPressed: () => _pickImage(context),
-                    child: Text('Pick Image from Gallery',
+                    child: const Text('Pick Image from Gallery',
                         style: TextStyle(
                           fontFamily: 'Lato',
                           fontWeight: FontWeight.w800,
@@ -146,7 +146,7 @@ class ImagePreviewScreen extends StatelessWidget {
               child: Image.file(image),
             ),
           ),
-          SizedBox(height: 10),
+          const SizedBox(height: 10),
           Row(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
@@ -183,7 +183,7 @@ class ImagePreviewScreen extends StatelessWidget {
               ),
             ],
           ),
-          SizedBox(height: 10),
+          const SizedBox(height: 10),
         ],
       ),
     );

@@ -312,7 +312,6 @@ class PreviewScreen extends StatelessWidget {
 }
 
 // Video Player Screen Widget
-
 class VideoPlayerScreen extends StatefulWidget {
   final String filePath;
 
