@@ -165,7 +165,7 @@ class ImagePreviewScreen extends StatelessWidget {
                   fontWeight: FontWeight.w600,
                 ),),
               ),
-              SizedBox(width: 10,),
+              const SizedBox(width: 10,),
               ElevatedButton(
                 onPressed: () {
                   Navigator.pop(context);
