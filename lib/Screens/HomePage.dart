@@ -18,7 +18,7 @@ class _HomePageState extends State<HomePage> with RouteAware {
     setState(() {
       buttonStates[index] = true;
       if (buttonStates.every((state) => state)) {
-        Navigator.push(context, MaterialPageRoute(builder: (context) => const UserDataScreen()));
+        Navigator.pushNamed(context, '/UserDataScreen');
         buttonStates = [false, false, false];
       }
     });
@@ -52,7 +52,7 @@ class _HomePageState extends State<HomePage> with RouteAware {
     final size = MediaQuery.of(context).size;
     final buttonWidth = size.width * 0.1;
     final buttonHeight = size.height * 0.04;
-    const double opacity = 0.05;
+    const double opacity = 0.0;
 
     return Scaffold(
       backgroundColor: Theme.of(context).colorScheme.background,

@@ -45,7 +45,7 @@ class _PreHomeScreenState extends State<PreHomeScreen> {
     final size = MediaQuery.of(context).size;
     final buttonWidth = size.width * 0.1;
     final buttonHeight = size.height * 0.04;
-    var opacity = 0.1;
+    var opacity = 0.0;
 
     return Scaffold(
       body: Stack(
