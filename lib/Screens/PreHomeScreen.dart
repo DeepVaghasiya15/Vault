@@ -45,6 +45,8 @@ class _PreHomeScreenState extends State<PreHomeScreen> {
     final size = MediaQuery.of(context).size;
     final buttonWidth = size.width * 0.1;
     final buttonHeight = size.height * 0.04;
+    var opacity = 0.1;
+
     return Scaffold(
       body: Stack(
         children: [
@@ -65,7 +67,7 @@ class _PreHomeScreenState extends State<PreHomeScreen> {
             top: size.height * 0.1,
             left: size.width * 0.05,
             child: Opacity(
-              opacity: 0.1,
+              opacity: opacity,
               child: SizedBox(
                 width: buttonWidth,
                 height: buttonHeight,
@@ -80,7 +82,7 @@ class _PreHomeScreenState extends State<PreHomeScreen> {
             top: size.height * 0.1,
             right: size.width * 0.05,
             child: Opacity(
-              opacity: 0.1,
+              opacity: opacity,
               child: SizedBox(
                 width: buttonWidth,
                 height: buttonHeight,
@@ -95,7 +97,7 @@ class _PreHomeScreenState extends State<PreHomeScreen> {
             bottom: size.height * 0.41,
             right: size.width * 0.26,
             child: Opacity(
-              opacity: 0.1,
+              opacity: opacity,
               child: SizedBox(
                 width: buttonWidth,
                 height: buttonHeight,

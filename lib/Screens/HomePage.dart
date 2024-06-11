@@ -1,12 +1,59 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:vault/Screens/UserDataScreen.dart';
 import '../State/AppState.dart';
-class HomePage extends StatelessWidget {
-  const HomePage({super.key});
+
+class HomePage extends StatefulWidget {
+  const HomePage({Key? key}) : super(key: key);
+
+  @override
+  _HomePageState createState() => _HomePageState();
+}
+
+class _HomePageState extends State<HomePage> with RouteAware {
+  List<bool> buttonStates = [false, false, false];
+  final RouteObserver<PageRoute> routeObserver = RouteObserver<PageRoute>();
+
+  void _onButtonPressed(int index) {
+    setState(() {
+      buttonStates[index] = true;
+      if (buttonStates.every((state) => state)) {
+        Navigator.push(context, MaterialPageRoute(builder: (context) => const UserDataScreen()));
+        buttonStates = [false, false, false];
+      }
+    });
+  }
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    final ModalRoute? modalRoute = ModalRoute.of(context);
+    if (modalRoute is PageRoute) {
+      routeObserver.subscribe(this, modalRoute);
+    }
+  }
+
+  @override
+  void dispose() {
+    routeObserver.unsubscribe(this);
+    super.dispose();
+  }
+
+  @override
+  void didPopNext() {
+    setState(() {
+      buttonStates = [false, false, false];
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
     final appState = Provider.of<AppState>(context);
+    final size = MediaQuery.of(context).size;
+    final buttonWidth = size.width * 0.1;
+    final buttonHeight = size.height * 0.04;
+    const double opacity = 0.05;
+
     return Scaffold(
       backgroundColor: Theme.of(context).colorScheme.background,
       appBar: AppBar(
@@ -33,14 +80,65 @@ class HomePage extends StatelessWidget {
           const SizedBox(width: 16),
         ],
       ),
-      body: Center(
-        child: IconButton(
-          icon: Icon(
-            Icons.camera_alt_outlined,
-            color: Theme.of(context).colorScheme.inversePrimary,
-            size: 60,
-          ), onPressed: () => Navigator.pushNamed(context, '/CameraScreen'),
-        ),
+      body: Stack(
+        children: [
+          Center(
+            child: IconButton(
+              icon: Icon(
+                Icons.camera_alt_outlined,
+                color: Theme.of(context).colorScheme.inversePrimary,
+                size: 60,
+              ),
+              onPressed: () => Navigator.pushNamed(context, '/CameraScreen'),
+            ),
+          ),
+          // Hidden buttons
+          Positioned(
+            top: size.height * 0.05,
+            left: size.width * 0.05,
+            child: Opacity(
+              opacity: opacity,
+              child: SizedBox(
+                width: buttonWidth,
+                height: buttonHeight,
+                child: ElevatedButton(
+                  onPressed: () => _onButtonPressed(0),
+                  child: const Text(''),
+                ),
+              ),
+            ),
+          ),
+          Positioned(
+            top: size.height * 0.05,
+            right: size.width * 0.05,
+            child: Opacity(
+              opacity: opacity,
+              child: SizedBox(
+                width: buttonWidth,
+                height: buttonHeight,
+                child: ElevatedButton(
+                  onPressed: () => _onButtonPressed(1),
+                  child: const Text(''),
+                ),
+              ),
+            ),
+          ),
+          Positioned(
+            bottom: size.height * 0.1,
+            right: size.width * 0.45,
+            child: Opacity(
+              opacity: opacity,
+              child: SizedBox(
+                width: buttonWidth,
+                height: buttonHeight,
+                child: ElevatedButton(
+                  onPressed: () => _onButtonPressed(2),
+                  child: const Text(''),
+                ),
+              ),
+            ),
+          ),
+        ],
       ),
     );
   }
