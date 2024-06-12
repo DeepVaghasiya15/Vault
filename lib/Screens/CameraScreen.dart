@@ -249,7 +249,7 @@ class PreviewScreen extends StatelessWidget {
       context: context,
       barrierDismissible: false, // Prevent user from dismissing dialog
       builder: (BuildContext context) {
-        return Center(
+        return const Center(
           child: CircularProgressIndicator(),
         );
       },

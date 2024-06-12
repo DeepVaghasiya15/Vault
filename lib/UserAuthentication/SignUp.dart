@@ -32,12 +32,12 @@ class SignupScreen extends StatelessWidget {
     showDialog(
       context: context,
       builder: (context) => AlertDialog(
-        title: Text('Signup Error'),
+        title: const Text('Signup Error'),
         content: Text(message),
         actions: [
           TextButton(
             onPressed: () => Navigator.of(context).pop(),
-            child: Text('OK'),
+            child: const Text('OK'),
           ),
         ],
       ),
@@ -54,7 +54,7 @@ class SignupScreen extends StatelessWidget {
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              Text(
+              const Text(
                 'Sign Up',
                 style: TextStyle(
                   fontSize: 32,
@@ -63,11 +63,11 @@ class SignupScreen extends StatelessWidget {
                   fontFamily: 'Lato',
                 ),
               ),
-              SizedBox(height: 24),
+              const SizedBox(height: 24),
               TextField(
                 controller: emailController,
-                style: TextStyle(color: Colors.white, fontFamily: 'Lato'), // Set the text color to white
-                decoration: InputDecoration(
+                style: const TextStyle(color: Colors.white, fontFamily: 'Lato'), // Set the text color to white
+                decoration: const InputDecoration(
                   labelText: 'Email',
                   labelStyle: TextStyle(color: Colors.white, fontFamily: 'Lato'), // Set the label text color to white
                   enabledBorder: OutlineInputBorder(
@@ -78,11 +78,11 @@ class SignupScreen extends StatelessWidget {
                   ),
                 ),
               ),
-              SizedBox(height: 16),
+              const SizedBox(height: 16),
               TextField(
                 controller: passwordController,
-                style: TextStyle(color: Colors.white, fontFamily: 'Lato'), // Set the text color to white
-                decoration: InputDecoration(
+                style: const TextStyle(color: Colors.white, fontFamily: 'Lato'), // Set the text color to white
+                decoration: const InputDecoration(
                   labelText: 'Password',
                   labelStyle: TextStyle(color: Colors.white, fontFamily: 'Lato'), // Set the label text color to white
                   enabledBorder: OutlineInputBorder(
@@ -94,11 +94,11 @@ class SignupScreen extends StatelessWidget {
                 ),
                 obscureText: true,
               ),
-              SizedBox(height: 16),
+              const SizedBox(height: 16),
               TextField(
                 controller: confirmPasswordController,
-                style: TextStyle(color: Colors.white, fontFamily: 'Lato'), // Set the text color to white
-                decoration: InputDecoration(
+                style: const TextStyle(color: Colors.white, fontFamily: 'Lato'), // Set the text color to white
+                decoration: const InputDecoration(
                   labelText: 'Confirm Password',
                   labelStyle: TextStyle(color: Colors.white, fontFamily: 'Lato'), // Set the label text color to white
                   enabledBorder: OutlineInputBorder(
@@ -110,17 +110,17 @@ class SignupScreen extends StatelessWidget {
                 ),
                 obscureText: true,
               ),
-              SizedBox(height: 24),
+              const SizedBox(height: 24),
               ElevatedButton(
                 onPressed: () => _signUp(context),
-                child: Text('Sign Up', style: TextStyle(fontFamily: 'Lato')),
+                child: const Text('Sign Up', style: TextStyle(fontFamily: 'Lato')),
               ),
-              SizedBox(height: 16),
+              const SizedBox(height: 16),
               TextButton(
                 onPressed: () {
                   Navigator.pushNamed(context, '/login');
                 },
-                child: Text(
+                child: const Text(
                   'Already have an account? Log in',
                   style: TextStyle(color: Colors.grey, fontFamily: 'Lato'),
                 ),

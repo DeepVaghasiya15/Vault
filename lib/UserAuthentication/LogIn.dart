@@ -57,7 +57,7 @@ class LoginScreen extends StatelessWidget {
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              Text(
+              const Text(
                 'Login',
                 style: TextStyle(
                   fontSize: 32,
@@ -66,11 +66,11 @@ class LoginScreen extends StatelessWidget {
                   fontFamily: 'Lato',
                 ),
               ),
-              SizedBox(height: 24),
+              const SizedBox(height: 24),
               TextField(
                 controller: emailController,
-                style: TextStyle(color: Colors.white, fontFamily: 'Lato'), // Set the text color to white
-                decoration: InputDecoration(
+                style: const TextStyle(color: Colors.white, fontFamily: 'Lato'), // Set the text color to white
+                decoration: const InputDecoration(
                   labelText: 'Email',
                   labelStyle: TextStyle(color: Colors.white, fontFamily: 'Lato'), // Set the label text color to white
                   enabledBorder: OutlineInputBorder(
@@ -81,11 +81,11 @@ class LoginScreen extends StatelessWidget {
                   ),
                 ),
               ),
-              SizedBox(height: 16),
+              const SizedBox(height: 16),
               TextField(
                 controller: passwordController,
-                style: TextStyle(color: Colors.white, fontFamily: 'Lato'), // Set the text color to white
-                decoration: InputDecoration(
+                style: const TextStyle(color: Colors.white, fontFamily: 'Lato'), // Set the text color to white
+                decoration: const InputDecoration(
                   labelText: 'Password',
                   labelStyle: TextStyle(color: Colors.white, fontFamily: 'Lato'), // Set the label text color to white
                   enabledBorder: OutlineInputBorder(
@@ -97,17 +97,17 @@ class LoginScreen extends StatelessWidget {
                 ),
                 obscureText: true,
               ),
-              SizedBox(height: 24),
+              const SizedBox(height: 24),
               ElevatedButton(
                 onPressed: () => _login(context),
-                child: Text('Login', style: TextStyle(fontFamily: 'Lato')),
+                child: const Text('Login', style: TextStyle(fontFamily: 'Lato')),
               ),
-              SizedBox(height: 16),
+              const SizedBox(height: 16),
               TextButton(
                 onPressed: () {
                   Navigator.pushNamed(context, '/signup');
                 },
-                child: Text(
+                child: const Text(
                   'Don\'t have an account? Sign up',
                   style: TextStyle(color: Colors.grey, fontFamily: 'Lato'),
                 ),
