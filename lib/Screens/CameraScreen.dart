@@ -5,6 +5,8 @@ import 'package:flutter/material.dart';
 import 'package:path/path.dart' show join;
 import 'package:path_provider/path_provider.dart';
 import 'package:video_player/video_player.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_storage/firebase_storage.dart';
 
 class CameraScreen extends StatefulWidget {
   const CameraScreen({Key? key}) : super(key: key);
@@ -242,6 +244,46 @@ class PreviewScreen extends StatelessWidget {
     required this.isVideo,
   }) : super(key: key);
 
+  Future<void> _uploadToFirebaseStorage(BuildContext context) async {
+    showDialog(
+      context: context,
+      barrierDismissible: false, // Prevent user from dismissing dialog
+      builder: (BuildContext context) {
+        return Center(
+          child: CircularProgressIndicator(),
+        );
+      },
+    );
+
+    try {
+      User? user = FirebaseAuth.instance.currentUser;
+      if (user != null) {
+        String email = user.email ?? ''; // Get the email address of the user
+        String fileName =
+        isVideo ? '$email/${DateTime.now()}.mp4' : '$email/${DateTime.now()}.png';
+
+        Reference firebaseStorageRef =
+        FirebaseStorage.instance.ref().child(fileName);
+        File file = File(filePath);
+        await firebaseStorageRef.putFile(file);
+        // Optionally, you can get the download URL of the uploaded file
+        String downloadURL = await firebaseStorageRef.getDownloadURL();
+        // Handle the URL as needed (e.g., save it to a database)
+        Navigator.pop(context); // Close the dialog
+        Navigator.pop(context); // Close the PreviewScreen
+        print('File uploaded to Firebase Storage. Download URL: $downloadURL');
+      } else {
+        // Handle case where user is not authenticated
+        print('User not authenticated');
+      }
+    } catch (e) {
+      print('Error uploading file to Firebase Storage: $e');
+      Navigator.pop(context); // Close the dialog
+    }
+  }
+
+
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -281,26 +323,20 @@ class PreviewScreen extends StatelessWidget {
                     borderRadius: BorderRadius.circular(8),
                   ),
                 ),
-                child: const Text('Take Again',style: TextStyle(
-                  fontFamily: 'Lato',
-                  fontWeight: FontWeight.w600
-                ),),
+                child: const Text('Take Again',
+                    style: TextStyle(
+                        fontFamily: 'Lato', fontWeight: FontWeight.w600)),
               ),
               const SizedBox(width: 20),
               ElevatedButton(
-                onPressed: () {
-
-                },
+                onPressed: () => _uploadToFirebaseStorage(context),
                 style: ElevatedButton.styleFrom(
-                  backgroundColor: Colors.green,
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(8)
-                  )
-                ),
-                child: const Text('Proceed',style: TextStyle(
-                  fontFamily: 'Lato',
-                  fontWeight: FontWeight.w600
-                ),),
+                    backgroundColor: Colors.green,
+                    shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(8))),
+                child: const Text('Proceed',
+                    style: TextStyle(
+                        fontFamily: 'Lato', fontWeight: FontWeight.w600)),
               ),
             ],
           ),

@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "416649582811",
+    "project_id": "vault-781bc",
+    "storage_bucket": "vault-781bc.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:416649582811:android:bbf6d5f65595115e50d4fe",
+        "android_client_info": {
+          "package_name": "com.example.vault"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBwj00XK2No6NrE2i3PN_SJekc1dhB1uRg"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

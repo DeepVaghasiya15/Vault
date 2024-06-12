@@ -1,3 +1,4 @@
+import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:vault/Screens/AuthScreen.dart';
@@ -7,10 +8,14 @@ import 'package:vault/Themes/light_theme.dart';
 import 'Screens/UserDataScreen.dart';
 import 'State/AppState.dart';
 import 'Screens/HomePage.dart';
+import 'UserAuthentication/LogIn.dart';
+import 'UserAuthentication/SignUp.dart';
 
 final RouteObserver<PageRoute> routeObserver = RouteObserver<PageRoute>();
 
-void main() {
+Future<void> main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  await Firebase.initializeApp();
   runApp(
     ChangeNotifierProvider(
       create: (context) => AppState(),
@@ -19,8 +24,10 @@ void main() {
         debugShowCheckedModeBanner: false,
         theme: lightMode,
         navigatorObservers: [routeObserver],
-        initialRoute: '/AuthScreen',
+        initialRoute: '/login',
         routes: {
+          '/login': (context) => LoginScreen(),
+          '/signup': (context) => SignupScreen(),
           '/AuthScreen': (context) => AuthScreen(),
           '/HomePage': (context) => HomePage(),
           '/SettingScreen': (context) => SettingScreen(),

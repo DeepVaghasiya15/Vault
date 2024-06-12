@@ -2,6 +2,7 @@ plugins {
     id "com.android.application"
     id "kotlin-android"
     id "dev.flutter.flutter-gradle-plugin"
+    id "com.google.gms.google-services"
 }
 
 def localProperties = new Properties()
@@ -69,6 +70,7 @@ flutter {
 
 dependencies {
 //    classpath 'com.android.tools.build:gradle:7.4.2'
+    implementation platform('com.google.firebase:firebase-bom:32.7.3')
     implementation 'com.android.support:multidex:1.0.3'
     // NOTE: Do not place your application dependencies here; they belong
     // in the individual module build.gradle files
