@@ -36,7 +36,7 @@ class _CameraScreenState extends State<CameraScreen> {
     if (cameras != null && cameras!.isNotEmpty) {
       _controller = CameraController(
         cameras![selectedCameraIndex], // Select the camera based on the index
-        ResolutionPreset.ultraHigh,
+        ResolutionPreset.veryHigh,
       );
       _initializeControllerFuture = _controller.initialize();
       setState(() {}); // Rebuild the widget after the camera is initialized
