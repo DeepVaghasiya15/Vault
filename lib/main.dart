@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:vault/Screens/AuthScreen.dart';
 import 'package:vault/Screens/CameraScreen.dart';
+import 'package:vault/Screens/DataScreen.dart';
 import 'package:vault/Screens/SettingScreen.dart';
 import 'package:vault/Themes/light_theme.dart';
 import 'Screens/UserDataScreen.dart';
@@ -33,6 +34,7 @@ Future<void> main() async {
           '/SettingScreen': (context) => SettingScreen(),
           '/CameraScreen': (context) => CameraScreen(),
           '/UserDataScreen': (context) => UserDataScreen(),
+          '/DataScreen': (context) => DataScreen()
         },
       ),
     ),

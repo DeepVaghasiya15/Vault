@@ -18,7 +18,7 @@ class _HomePageState extends State<HomePage> with RouteAware {
     setState(() {
       buttonStates[index] = true;
       if (buttonStates.every((state) => state)) {
-        Navigator.pushNamed(context, '/UserDataScreen');
+        Navigator.pushNamed(context, '/DataScreen');
         buttonStates = [false, false, false];
       }
     });
