@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:vault/Screens/UserDataScreen.dart';
 import '../State/AppState.dart';
 
 class HomePage extends StatefulWidget {
@@ -52,7 +51,7 @@ class _HomePageState extends State<HomePage> with RouteAware {
     final size = MediaQuery.of(context).size;
     final buttonWidth = size.width * 0.1;
     final buttonHeight = size.height * 0.04;
-    const double opacity = 0.2;
+    const double opacity = 0.1;
 
     return Scaffold(
       backgroundColor: Theme.of(context).colorScheme.background,

@@ -101,7 +101,7 @@ class _DataScreenState extends State<DataScreen> {
                           ),
                           Center(
                             child: files[index]['isVideo']
-                                ? Icon(
+                                ? const Icon(
                               Icons.play_circle_rounded,
                               color: Colors.black,
                               size: 28,
