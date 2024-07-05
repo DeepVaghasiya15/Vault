@@ -36,11 +36,65 @@ class _DataScreenState extends State<DataScreen> {
         String downloadURL = await item.getDownloadURL();
         String name = item.name;
         bool isVideo = name.endsWith('.mp4');
-        files.add({'url': downloadURL, 'isVideo': isVideo});
+        files.add({
+          'url': downloadURL,
+          'isVideo': isVideo,
+          'reference': item, // Store the StorageReference object
+        });
       }
     }
     return files;
   }
+
+  Future<void> _deleteFile(BuildContext context, Reference reference, int index, List<Map<String, dynamic>> files) async {
+    // Show confirmation dialog
+    bool confirmDelete = await showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: const Text("Confirm Delete",style: TextStyle(color: Colors.white),),
+          content: const Text("Are you sure you want to delete this file?",style: TextStyle(color: Colors.white54),),
+          actions: <Widget>[
+            TextButton(
+              child: const Text("Cancel",style: TextStyle(color: Colors.white54),),
+              onPressed: () {
+                Navigator.of(context).pop(false); // Dismiss the dialog and return false
+              },
+            ),
+            TextButton(
+              child: const Text("Delete",style: TextStyle(color: Colors.red),),
+              onPressed: () {
+                Navigator.of(context).pop(true); // Dismiss the dialog and return true
+              },
+            ),
+          ],
+        );
+      },
+    );
+
+    // If user confirms deletion, proceed with delete operation
+    if (confirmDelete ?? false) {
+      try {
+        await reference.delete();
+        // Handle success, e.g., show a snackbar or toast
+        ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+          content: Text('File deleted successfully'),
+        ));
+        setState(() {
+          files.removeAt(index); // Remove item from the list
+        });
+      } catch (e) {
+        // Handle error, e.g., show an error message
+        ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+          content: Text('Failed to delete file: $e'),
+          backgroundColor: Colors.red,
+        ));
+      }
+    }
+  }
+
+
+
 
   @override
   Widget build(BuildContext context) {
@@ -93,16 +147,25 @@ class _DataScreenState extends State<DataScreen> {
                           AspectRatio(
                             aspectRatio: 1, // Maintain a 1:1 aspect ratio (square)
                             child: ClipRRect(
-                              borderRadius: BorderRadius.circular(8), // Set the corner radius here
+                              borderRadius: BorderRadius.circular(8),
                               child: files[index]['isVideo']
                                   ? VideoPlayerScreen(url: files[index]['url'])
                                   : Image.network(files[index]['url'], fit: BoxFit.cover),
                             ),
                           ),
+                          Align(
+                            alignment: Alignment.topRight,
+                            child: IconButton(
+                              icon: const Icon(Icons.delete,color: Colors.red,),
+                              onPressed: () {
+                                _deleteFile(context, files[index]['reference'], index, files); // Pass context, reference, index, and files list
+                              },
+                            ),
+                          ),
                           Center(
                             child: files[index]['isVideo']
                                 ? const Icon(
-                              Icons.play_circle_rounded,
+                              Icons.play_circle_outline_rounded,
                               color: Colors.black,
                               size: 28,
                             )
@@ -114,8 +177,6 @@ class _DataScreenState extends State<DataScreen> {
                   );
                 },
               );
-
-
             } else {
               return const Center(child: Text('No data available'));
             }
@@ -148,23 +209,35 @@ class _VideoPlayerScreenState extends State<VideoPlayerScreen> with AutomaticKee
   @override
   void initState() {
     super.initState();
-    _videoController = VideoControllerManager.instance.getController(widget.url);
-    _initializeVideo();
+    _videoController = VideoPlayerController.network(widget.url)
+      ..initialize().then((_) {
+        // Ensure the video is playing when initialized
+        _videoController.setLooping(true);
+        _videoController.play();
+        _videoController.setVolume(0.0); // Mute the video's audio
+        setState(() {}); // Update UI to reflect video initialization
+      });
+
+    // Listen to video controller changes
+    _videoController.addListener(_videoListener);
   }
 
   @override
   void dispose() {
-    VideoControllerManager.instance.disposeController(widget.url);
+    // Dispose of the video controller when no longer needed
+    _videoController.removeListener(_videoListener);
+    _videoController.pause(); // Pause the video
+    _videoController.dispose();
     super.dispose();
   }
 
-  Future<void> _initializeVideo() async {
-    if (!_videoController.value.isInitialized) {
-      await _videoController.initialize();
-      _videoController.setLooping(true);
-      setState(() {});
+  // Listener to handle video playback state changes
+  void _videoListener() {
+    if (!_videoController.value.isPlaying && _videoController.value.isInitialized) {
+      // Handle playback if needed (e.g., replay, pause)
       _videoController.play();
     }
+    setState(() {}); // Update UI when playback state changes
   }
 
   @override
@@ -185,6 +258,7 @@ class _VideoPlayerScreenState extends State<VideoPlayerScreen> with AutomaticKee
   @override
   bool get wantKeepAlive => true; // Override wantKeepAlive to return true
 }
+
 
 
 class FullScreenImageScreen extends StatelessWidget {
