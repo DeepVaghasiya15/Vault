@@ -1,5 +1,4 @@
 import 'dart:io';
-
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -258,8 +257,6 @@ class _VideoPlayerScreenState extends State<VideoPlayerScreen> with AutomaticKee
   @override
   bool get wantKeepAlive => true; // Override wantKeepAlive to return true
 }
-
-
 
 class FullScreenImageScreen extends StatelessWidget {
   final String url;
